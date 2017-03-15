@@ -1,0 +1,9 @@
+{
+    "tmpfiles" : 
+    {
+	"motion" : "/home/pi/motion.json",
+        "camera" : "/home/pi/camera.json",
+        "lcd"    : "/home/pi/lcd.json",
+	"tree"    : "/home/pi/tree.json"
+    }
+}
