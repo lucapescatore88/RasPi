@@ -1,1 +1,1 @@
-PATHONPATH=$PYTHONPATH:/home/pi/libraries
+PATHONPATH=/home/pi/runpi/libraries

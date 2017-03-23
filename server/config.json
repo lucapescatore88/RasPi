@@ -1,9 +1,10 @@
 {
     "tmpfiles" : 
     {
-	"motion" : "/home/pi/motion.json",
-        "camera" : "/home/pi/camera.json",
-        "lcd"    : "/home/pi/lcd.json",
-	"tree"    : "/home/pi/tree.json"
+	"motion"          : "/home/pi/runpi/server/tmp/motion.json",
+        "camera"          : "/home/pi/runpi/server/tmp/camera.json",
+        "lcd"             : "/home/pi/runpi/server/tmp/lcd.json",
+	"tree"            : "/home/pi/runpi/server/tmp/tree.json",
+        "potentiometer"   : "/home/pi/runpi/server/tmp/potentiometer.json"
     }
 }
