@@ -7,6 +7,9 @@ from LCD import Adafruit_CharLCD as LCD
 lcd = LCD(4,17,27,22,6,19,16,2)
 #lcd.message("Ciao bella!!    \nBlablabla       ")
 
+usb = '0'
+if len(sys.argv) > 1 :
+    usb = sys.argv[1] 
 
 class Board :
 
@@ -15,7 +18,7 @@ class Board :
         io.setwarnings(False)
 
         self.io = io
-        self.board = Arduino('/dev/ttyACM'+sys.argv[1])
+        self.board = Arduino('/dev/ttyACM'+usb)
         self.it = util.Iterator(self.board)
         self.it.start()
 

@@ -6,6 +6,7 @@ var lcdCtrl = require('./controllers/lcd_controller');
 var cameraCtrl = require('./controllers/camera_controller');
 var potCtrl = require('./controllers/potentiometer_controller');
 var treeCtrl = require('./controllers/tree_controller');
+var motorCtrl = require('./controllers/motor_controller');
 
 app.use('/',express.static(__dirname+'/public'));
 app.use('/', function (req, res, next) {
@@ -18,6 +19,7 @@ lcdCtrl(app);
 cameraCtrl(app);
 potCtrl(app);
 treeCtrl(app);
+motorCtrl(app);
 
 app.listen(3000,'192.168.0.66');
 
