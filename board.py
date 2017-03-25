@@ -30,17 +30,19 @@ class Board :
         io.setmode(io.BCM)
         io.setup(self.ch["tree"], io.OUT, initial = False)
         
-        self.pin_motor  = self.board.get_pin('d:10:p')
+        self.pin_motor  = self.board.get_pin('d:10:s')
         self.pin_sound  = self.board.get_pin('a:0:i')
         self.pin_pot    = self.board.get_pin('a:5:i')
         self.pin_motion = self.board.get_pin('a:1:i')
+        self.pin_light  = self.board.get_pin('a:4:i')
 
         #self.test_pin  = self.board.analog[4]
         #self.test_pin.enable_reporting()
         
-        #while self.pin_motor.read() is None : pass
-        #while self.pin_pot.read() is None : pass
-        #while self.pin_sound.read() is None : pass
+        while self.pin_motor.read() is None : pass
+        while self.pin_pot.read() is None : pass
+        while self.pin_sound.read() is None : pass
+        while self.pin_light.read() is None : pass
         print "Started"
 
     def output(self,name,value) :

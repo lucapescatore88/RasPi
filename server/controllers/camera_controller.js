@@ -25,10 +25,17 @@ module.exports = function(app) {
 
             fs.writeFile(file, JSON.stringify(obj), function(err2) {
             
-            if(err2) { console.log(err2); return; }
-            res.sendFile("/home/pi/runpi/server/images/capture.jpg");
+                if(err2) { console.log(err2); return; }
+                setTimeout( function() {
+                    res.sendFile("/home/pi/runpi/server/images/capture.jpg");
+                });
             });
         });
+    });
+
+    app.get('/api/camera/getstats', function (req, res) {
+
+            res.sendFile("/home/pi/runpi/server/images/stats.png");
     });
 
 }

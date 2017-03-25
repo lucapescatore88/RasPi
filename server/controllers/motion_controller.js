@@ -23,5 +23,11 @@ module.exports = function(app) {
         });
     });
 
+    app.get('/api/motion/stats', function (req, res) {
+
+        res.sendFile("/home/pi/runpi/server/images/stats.png");
+    });
+
+
 }
  
