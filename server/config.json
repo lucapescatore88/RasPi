@@ -2,6 +2,7 @@
     "tmpfiles" : 
     {
 	"motion"          : "/home/pi/runpi/server/tmp/sensors.json",
+        "rgb"             : "/home/pi/runpi/server/tmp/rgb.json",
         "motor"           : "/home/pi/runpi/server/tmp/motor.json",
         "camera"          : "/home/pi/runpi/server/tmp/camera.json",
         "lcd"             : "/home/pi/runpi/server/tmp/lcd.json",

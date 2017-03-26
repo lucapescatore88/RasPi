@@ -17,20 +17,20 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-#d = {'hist':[0]*24, "entries" : 0 }
-#pickle.dump(d,open(tmp+"stats.pkl","w"),protocol=pickle.HIGHEST_PROTOCOL)
+if len(sys.argv) > 1 and sys.argv[1]=="reset" : 
+    d = {'hist':[0]*24, "entries" : 1 }
+    pickle.dump(d,open(tmp+"stats.pkl","w"),protocol=pickle.HIGHEST_PROTOCOL)
 
 def build_stats(inpt,output) :
 
     h = int(datetime.datetime.now().hour)
     fname = tmp+"stats.pkl"
     with open(fname) as f :
-        stats = pickle.load(open(fname))
-    
+        stats = pickle.load(open(fname)) 
     if b.pin_motion.read() > 0.5 : 
-        stats["hist"][h] = stats["hist"][h]*stats["entries"] + 100
-    #print stats["hist"]
-    stats["entries"] += 1
+        stats["hist"][h] = stats["hist"][h]*stats["entries"] + 1
+        stats["entries"] += 1 
+        
     stats["hist"] = [ x / stats["entries"] for x in stats["hist"]]
     
     plt.xkcd()
@@ -52,13 +52,29 @@ def read_sensors(inpt,outpt) :
     obj = {"motion" : "NO", "sound" : "NO", "light" : "NO"}
     if b.pin_motion.read() > 0.5 : obj["motion"] = "YES"
     if b.pin_sound.read() < 0.5 : obj["sound"] = "YES"
-    if b.pin_light.read() < 0.5 : obj["light"] = "YES"
+    if b.pin_light.read() < 0.3 : obj["light"] = "YES"
     #print b.pin_motion.read(), b.pin_sound.read()
-    
+    #print b.pin_light.read()
+
     s = json.dumps(obj)
     file = open(tmp+"/sensors.json","w")
     file.write(s)
     file.close()
+
+def set_rgb(inpt,outpt) :
+
+    with open(tmp+"/rgb.json") as f :
+        data = f.read()
+        try: obj = json.loads(data)
+        except ValueError, e: return
+
+    #print obj
+    if obj["blue"] == 'true' : b.output("rgb_b",True)
+    else : b.output("rgb_b",False)
+    if obj["red"] == 'true' : b.output("rgb_r",True)
+    else : b.output("rgb_r",False)
+    if obj["green"] == 'true': b.output("rgb_g",True)
+    else : b.output("rgb_g",False)
 
 def set_motor(inpt,outpt) : 
 
@@ -111,6 +127,7 @@ def set_camera(inpt,outpt) :
  
 
 jm = JobManager()
+jm.add_process("rgb",set_rgb,interval=0.1)
 jm.add_process("stats",build_stats,interval=5)
 jm.add_process("sensors",read_sensors,interval=0.1)
 jm.add_process("camera",set_camera,interval=0.5)

@@ -8,7 +8,7 @@ lcd = LCD(4,17,27,22,6,19,16,2)
 #lcd.message("Ciao bella!!    \nBlablabla       ")
 
 usb = '0'
-if len(sys.argv) > 1 :
+if len(sys.argv) > 1  and sys.argv[1]!="reset" :
     usb = sys.argv[1] 
 
 class Board :
@@ -23,12 +23,18 @@ class Board :
         self.it.start()
 
         self.ch = {}
-        self.ch["tree"] = 21        
+        self.ch["tree"] = 21
+        self.ch["rgb_r"] = 23
+        self.ch["rgb_b"] = 24
+        self.ch["rgb_g"] = 25 
         
         self.lcd = lcd
 
         io.setmode(io.BCM)
         io.setup(self.ch["tree"], io.OUT, initial = False)
+        io.setup(self.ch["rgb_r"], io.OUT, initial = False)
+        io.setup(self.ch["rgb_b"], io.OUT, initial = False)
+        io.setup(self.ch["rgb_g"], io.OUT, initial = False)
         
         self.pin_motor  = self.board.get_pin('d:10:s')
         self.pin_sound  = self.board.get_pin('a:0:i')
@@ -39,11 +45,13 @@ class Board :
         #self.test_pin  = self.board.analog[4]
         #self.test_pin.enable_reporting()
         
-        while self.pin_motor.read() is None : pass
+        #while self.pin_motor.read() is None : pass
         while self.pin_pot.read() is None : pass
         while self.pin_sound.read() is None : pass
         while self.pin_light.read() is None : pass
+
         print "Started"
+        self.pin_motor.write(80)
 
     def output(self,name,value) :
 
