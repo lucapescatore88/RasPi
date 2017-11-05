@@ -1,7 +1,6 @@
 import sys
 sys.path.append("/home/pi/runpi/libraries")
 
-#import RPi.GPIO as io
 from board import Board
 import subprocess as sb
 from JobManager import JobManager
@@ -17,9 +16,9 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-if len(sys.argv) > 1 and sys.argv[1]=="reset" : 
-    d = {'hist':[0]*24, "entries" : 1 }
-    pickle.dump(d,open(tmp+"stats.pkl","w"),protocol=pickle.HIGHEST_PROTOCOL)
+#if len(sys.argv) > 1 and sys.argv[1]=="reset" : 
+#d = {'hist':[0]*24, "entries" : 0 }
+#pickle.dump(d,open(tmp+"stats.pkl","w"),protocol=pickle.HIGHEST_PROTOCOL)
 
 def build_stats(inpt,output) :
 
@@ -28,18 +27,20 @@ def build_stats(inpt,output) :
     with open(fname) as f :
         stats = pickle.load(open(fname)) 
     if b.pin_motion.read() > 0.5 : 
-        stats["hist"][h] = stats["hist"][h]*stats["entries"] + 1
+        stats["hist"][h] = stats["hist"][h]*stats["entries"] + 1.
         stats["entries"] += 1 
-        
-    stats["hist"] = [ x / stats["entries"] for x in stats["hist"]]
     
+        if stats["entries"] == 0 : return
+        stats["hist"] = [ x / float(stats["entries"]) for x in stats["hist"]] 
+
     plt.xkcd()
     plt.figure(figsize=(4, 3), dpi=100)
     plt.plot(range(0,24),stats["hist"])
     plt.xlabel('Daily hour')
     plt.ylabel('Movement')
     plt.savefig(img+'stats.png')    
-   
+    print stats["hist"]  
+ 
     with open(fname,"w") as f : 
         pickle.dump(stats,f,protocol=pickle.HIGHEST_PROTOCOL)
 
@@ -53,6 +54,7 @@ def read_sensors(inpt,outpt) :
     if b.pin_motion.read() > 0.5 : obj["motion"] = "YES"
     if b.pin_sound.read() < 0.5 : obj["sound"] = "YES"
     if b.pin_light.read() < 0.3 : obj["light"] = "YES"
+    #print b.read("remote")
     #print b.pin_motion.read(), b.pin_sound.read()
     #print b.pin_light.read()
 
@@ -96,7 +98,7 @@ def set_lcd(inpt,outpt) :
         msg = ""
         if 'message0' in obj : msg = '{0:16}\n'.format(obj['message0'][:16])
         if 'message1' in obj : msg += '{0:16}'.format(obj['message1'][:16])
-        msg.replace("_"," ")
+        msg = msg.replace("_"," ")
        
         b.lcd.clear() 
         b.lcd.message(msg)
@@ -128,7 +130,7 @@ def set_camera(inpt,outpt) :
 
 jm = JobManager()
 jm.add_process("rgb",set_rgb,interval=0.1)
-jm.add_process("stats",build_stats,interval=5)
+jm.add_process("stats",build_stats,interval=1)
 jm.add_process("sensors",read_sensors,interval=0.1)
 jm.add_process("camera",set_camera,interval=0.5)
 jm.add_process("lcd",set_lcd,interval=0.1)

@@ -26,7 +26,8 @@ class Board :
         self.ch["tree"] = 21
         self.ch["rgb_r"] = 23
         self.ch["rgb_b"] = 24
-        self.ch["rgb_g"] = 25 
+        self.ch["rgb_g"] = 25
+        self.ch["remote"] = 16
         
         self.lcd = lcd
 
@@ -35,6 +36,7 @@ class Board :
         io.setup(self.ch["rgb_r"], io.OUT, initial = False)
         io.setup(self.ch["rgb_b"], io.OUT, initial = False)
         io.setup(self.ch["rgb_g"], io.OUT, initial = False)
+        io.setup(self.ch["remote"], io.IN)
         
         self.pin_motor  = self.board.get_pin('d:10:s')
         self.pin_sound  = self.board.get_pin('a:0:i')
@@ -59,7 +61,7 @@ class Board :
     
     def read(self,name) :
 
-        io.input(self.ch[name])
+        return io.input(self.ch[name])
 
 
 
