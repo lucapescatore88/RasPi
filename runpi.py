@@ -11,22 +11,27 @@ tmp = "/home/pi/runpi/server/tmp/"
 img = "/home/pi/runpi/server/images/"
 
 import datetime
-import pickle
+import cPickle as pickle
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-#if len(sys.argv) > 1 and sys.argv[1]=="reset" : 
-#d = {'hist':[0]*24, "entries" : 0 }
-#pickle.dump(d,open(tmp+"stats.pkl","w"),protocol=pickle.HIGHEST_PROTOCOL)
+if not os.path.exists(tmp+"stats.pkl") :  
+    d = {'hist':[0]*24, "entries" : 0 }  
+    pickle.dump(d,open(tmp+"stats.pkl","w"),protocol=pickle.HIGHEST_PROTOCOL)
+    print "Reset stats file"
+
+def check_motion(inpt) :
+
+    if b.pin_motion.read() > 0.5 : return True
+    return False
 
 def build_stats(inpt,output) :
 
     h = int(datetime.datetime.now().hour)
     fname = tmp+"stats.pkl"
-    with open(fname) as f :
+    with open(fname,'r') as f :
         stats = pickle.load(open(fname)) 
-    if b.pin_motion.read() > 0.5 : 
         stats["hist"][h] = stats["hist"][h]*stats["entries"] + 1.
         stats["entries"] += 1 
     
@@ -39,8 +44,7 @@ def build_stats(inpt,output) :
     plt.xlabel('Daily hour')
     plt.ylabel('Movement')
     plt.savefig(img+'stats.png')    
-    print stats["hist"]  
- 
+    
     with open(fname,"w") as f : 
         pickle.dump(stats,f,protocol=pickle.HIGHEST_PROTOCOL)
 
@@ -130,7 +134,7 @@ def set_camera(inpt,outpt) :
 
 jm = JobManager()
 jm.add_process("rgb",set_rgb,interval=0.1)
-jm.add_process("stats",build_stats,interval=1)
+jm.add_process("stats",build_stats,triggers=[check_motion])
 jm.add_process("sensors",read_sensors,interval=0.1)
 jm.add_process("camera",set_camera,interval=0.5)
 jm.add_process("lcd",set_lcd,interval=0.1)

@@ -6,21 +6,20 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 loc = "/home/pi/runpi/server/tmp/"
-d = {'hist':[0,1,2,3,4,0,1,2,3,4,0,1,2,3,4,0,1,2,3,4,0,1,2,3], "entries" : 1 }
+d = {'hist':[0]*24, "entries" : 1 }
 pickle.dump(d,open(loc+"stats.pkl","w"),protocol=pickle.HIGHEST_PROTOCOL)
 
 def build_stats(inpt,output) :
 
     h = int(datetime.datetime.now().hour)
     fname = loc+"stats.pkl"
-    with open(fname) as f :
+    with open(fname,'r') as f :
         stats = pickle.load(open(fname))
     
     if motion : 
         stats["hist"][h] = stats["hist"][h]*stats["entries"] + 1
-    
-    stats["entries"] += 1
-    stats["hist"] = [ x / stats["entries"] for x in stats["hist"]]
+        stats["entries"] += 1
+        stats["hist"] = [ x / stats["entries"] for x in stats["hist"]]
     
     plt.xkcd()
     plt.figure()

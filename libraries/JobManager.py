@@ -7,7 +7,7 @@ class Proc :
     def __init__(self,proc,target,triggers,interval,sched,inpt,outpt,last) :
 
         self.proc     = proc
-        self.target        = target
+        self.target   = target
         self.triggers = triggers
         self.interval = interval
         self.sched    = sched
@@ -52,8 +52,17 @@ class JobManager :
     def check_triggers(self) :
 
         for name,proc in self.processes.iteritems() :
-            for trig in proc.triggers : 
-                if trig(proc.inpt) : self.start(name)
+            for trig in proc.triggers :
+                
+                #run = True
+                #if proc.interval is not None :
+                #if proc.proc.is_alive() :
+                    #now = datetime.now()
+                    #if (now - proc.last).total_seconds() < proc.interval :
+                #    run = False
+                
+                if not proc.proc.is_alive() :
+                    if trig(proc.inpt) : self.start(name)
 
     def check_interval(self) :
 
